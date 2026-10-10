@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Showcase Game Siswa RPL</title>
+  <link rel="icon" type="image/svg+xml" href="https://api.iconify.design/lucide:gamepad-2.svg?color=%2306b6d4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="https://api.iconify.design/lucide:gamepad-2.svg?color=%2306b6d4">
 
   <style>
     :root {
@@ -138,7 +138,6 @@
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
     }
 
-    /* Thumbnail Gambar Game */
     .game-thumb {
       width: 100%;
       height: 180px;
@@ -223,7 +222,6 @@
       box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
     }
 
-    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -338,6 +336,7 @@
     </div>
   </main>
 
+  <!-- Modal Mainkan Game -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -348,6 +347,7 @@
     </div>
   </div>
 
+  <!-- Modal Password Zona Siswa -->
   <div id="authModal" class="modal">
     <div class="modal-content modal-auth">
       <h2 style="color: #fff; margin-bottom: 0.5rem;">🎓 Masuk Zona Siswa</h2>
@@ -378,7 +378,7 @@
         gameData = await response.json();
         renderGames(gameData);
       } catch (error) {
-        console.error(error);
+        console.error("Error loading games:", error);
         container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ef4444;">Gagal memuat data game. Silakan periksa jaringan.</p>`;
       }
     }
