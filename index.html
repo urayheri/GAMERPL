@@ -4,32 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Showcase Game Siswa RPL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header>
-    <h1>🎮 Showcase Game Karya Siswa RPL</h1>
-    <p>Galeri Proyek & Tugas Game Siswa Rekayasa Perangkat Lunak</p>
+    <h1 class="hero-title">🎮 RPL GAME SHOWCASE</h1>
+    <p class="hero-subtitle">Galeri Karya & Proyek Game Siswa Rekayasa Perangkat Lunak</p>
+    
     <nav>
-      <button class="btn-filter active" onclick="filterGames('Semua')">Semua Game</button>
-      <button class="btn-filter" onclick="filterGames('Game Tradisional')">Game Tradisional</button>
-      <button class="btn-filter" onclick="filterGames('Game Edukasi')">Game Edukasi</button>
-      <a href="submit.html" class="btn-nav btn-add">+ Pengumpulan Tugas</a>
+      <button class="btn-filter active" onclick="filterGames('Semua')">🕹️ Semua Game</button>
+      <button class="btn-filter" onclick="filterGames('Game Tradisional')">🏛️ Game Tradisional</button>
+      <button class="btn-filter" onclick="filterGames('Game Edukasi')">🧠 Game Edukasi</button>
+      <a href="submit.html" class="btn-nav btn-add">➕ Kumpulkan Tugas Game</a>
     </nav>
   </header>
 
   <main>
     <div id="gameContainer" class="game-grid">
-      <p style="grid-column: 1/-1; text-align: center;">Memuat daftar game...</p>
+      <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Memuat daftar game...</p>
     </div>
   </main>
 
-  <!-- Modal Iframe untuk Memainkan Game -->
+  <!-- Modal Iframe Tempat Memainkan Game -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="modalTitle">Judul Game</h3>
+        <h3 id="modalTitle" style="color: #fff;">Judul Game</h3>
         <button class="close-btn" onclick="closeModal()">&times;</button>
       </div>
       <iframe id="gameFrame" src="" allowfullscreen></iframe>
@@ -50,7 +54,7 @@
         renderGames(gameData);
       } catch (error) {
         console.error(error);
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Gagal memuat data game. Silakan coba lagi nanti.</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ef4444;">Gagal memuat data game. Silakan periksa jaringan.</p>`;
       }
     }
 
@@ -59,28 +63,34 @@
       container.innerHTML = "";
 
       if (!data || data.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center;">Belum ada game yang dikumpulkan.</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Belum ada game yang dikumpulkan dalam kategori ini.</p>`;
         return;
       }
 
       data.forEach(item => {
+        const isTradisional = (item.Kategori || "").toLowerCase().includes("tradisional");
+        const badgeClass = isTradisional ? "badge tradisional" : "badge";
+
         const card = document.createElement("div");
         card.className = "game-card";
         card.innerHTML = `
           <div>
-            <span class="badge">${item.Kategori || "Game"}</span>
+            <div class="card-header">
+              <span class="${badgeClass}">${item.Kategori || "Game"}</span>
+            </div>
             <h3>${item["Judul Game"] || "Tanpa Judul"}</h3>
             <p class="author">Oleh: <strong>${item["Nama Siswa"] || "-"}</strong> (${item.Kelas || "-"})</p>
             <p class="desc">${item.Deskripsi || "-"}</p>
           </div>
-          <button class="btn-play" onclick="openGame('${item["Game URL"]}', '${item["Judul Game"]}')">▶ Mainkan Game</button>
+          <button class="btn-play" onclick="openGame('${item["Game URL"]}', '${item["Judul Game"]}')">
+            <span>▶</span> Mainkan Sekarang
+          </button>
         `;
         container.appendChild(card);
       });
     }
 
     function filterGames(kategori) {
-      // Update tampilan tombol aktif
       document.querySelectorAll(".btn-filter").forEach(btn => {
         btn.classList.remove("active");
         if (btn.innerText.includes(kategori) || (kategori === "Semua" && btn.innerText.includes("Semua"))) {
