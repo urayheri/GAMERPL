@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <style>
@@ -21,159 +20,26 @@
       --text-muted: #94a3b8;
       --glass-border: rgba(255, 255, 255, 0.08);
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body {
       background-color: var(--bg-primary);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
-      background-attachment: fixed;
-      color: var(--text-main);
-      line-height: 1.6;
-      min-height: 100vh;
+      background-image: radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
+      background-attachment: fixed; color: var(--text-main); line-height: 1.6; min-height: 100vh;
     }
-
-    header {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--glass-border);
-      padding: 2.5rem 1rem 1.5rem;
-      text-align: center;
-    }
-
-    .hero-title {
-      font-size: 2.2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #38bdf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.4rem;
-    }
-
-    .hero-subtitle {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .btn-nav {
-      padding: 10px 20px;
-      border: 1px solid var(--glass-border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-main);
-      border-radius: 30px;
-      cursor: pointer;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-nav:hover {
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-    }
-
-    main {
-      max-width: 1200px;
-      margin: 1.5rem auto 3rem;
-      padding: 0 1.5rem;
-    }
-
-    .form-box {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      max-width: 650px;
-      margin: 0 auto;
-      padding: 2.5rem;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .form-group {
-      margin-bottom: 1.4rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: #e2e8f0;
-      font-size: 0.9rem;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 12px 16px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: white;
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-    }
-
-    .form-group input[type="file"] {
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      outline: none;
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
-    }
-
-    .btn-submit-form {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      border: none;
-      padding: 14px;
-      width: 100%;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn-submit-form:hover {
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-      filter: brightness(1.1);
-    }
-
-    .btn-submit-form:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .swal2-popup {
-      background: #1e293b !important;
-      color: #f8fafc !important;
-      border: 1px solid var(--glass-border) !important;
-      border-radius: 16px !important;
-    }
-    .swal2-title {
-      color: #f8fafc !important;
-    }
-    .swal2-html-container {
-      color: #94a3b8 !important;
-    }
+    header { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border); padding: 2.5rem 1rem 1.5rem; text-align: center; }
+    .hero-title { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #38bdf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.4rem; }
+    .hero-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .btn-nav { padding: 10px 20px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); border-radius: 30px; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    main { max-width: 1200px; margin: 1.5rem auto 3rem; padding: 0 1.5rem; }
+    .form-box { background: var(--bg-card); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); max-width: 650px; margin: 0 auto; padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+    .form-group { margin-bottom: 1.4rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #e2e8f0; font-size: 0.9rem; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border); border-radius: 10px; color: white; font-size: 0.95rem; }
+    .form-group input[type="file"] { padding: 8px; cursor: pointer; }
+    .btn-submit-form { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .swal2-popup { background: #1e293b !important; color: #f8fafc !important; border: 1px solid var(--glass-border) !important; border-radius: 16px !important; }
+    .swal2-title { color: #f8fafc !important; }
+    .swal2-html-container { color: #94a3b8 !important; }
   </style>
 </head>
 <body>
@@ -188,7 +54,7 @@
 
   <main>
     <div class="form-box">
-      <!-- Hidden iframe untuk menangkap submit form tanpa terpengaruh CORS -->
+      <!-- Hidden Iframe Pengaman Upload -->
       <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
       <form id="submissionForm" action="https://script.google.com/macros/s/AKfycbxm6EWSN6KpaH2QR9Jtznl3MJToPRD49zJZgPpjm8piLcsdED-aFnqfWTcYHJx6pbEo/exec" method="POST" target="hidden_iframe">
@@ -221,7 +87,7 @@
         </div>
 
         <div class="form-group">
-          <label for="thumbnailFile">Upload Screenshot / Cover Game (PNG / JPG)</label>
+          <label for="thumbnailFile">Upload Screenshot / Cover Game (PNG / JPG - Maks 1.5MB)</label>
           <input type="file" id="thumbnailFile" accept="image/*" required>
         </div>
 
@@ -230,7 +96,7 @@
           <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
         </div>
 
-        <!-- Hidden inputs untuk menampung data gambar -->
+        <!-- Dynamic Inputs -->
         <input type="hidden" id="fileBase64" name="fileBase64">
         <input type="hidden" id="fileName" name="fileName">
         <input type="hidden" id="fileMimeType" name="fileMimeType">
@@ -245,28 +111,20 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    // Proteksi Akses
     if (sessionStorage.getItem("siswaAuthenticated") !== "true") {
-      Swal.fire({
-        icon: 'error',
-        title: 'Akses Ditolak!',
-        text: 'Silakan masuk melalui tombol Zona Siswa di halaman utama.',
-        confirmButtonColor: '#06b6d4'
-      }).then(() => {
-        window.location.href = "index.html";
-      });
+      Swal.fire({ icon: 'error', title: 'Akses Ditolak!', text: 'Silakan masuk melalui tombol Zona Siswa di halaman utama.' })
+        .then(() => { window.location.href = "index.html"; });
     }
 
     let submitted = false;
-    const iframe = document.getElementById('hidden_iframe');
 
-    // Menagkap respons saat iframe selesai loading setelah form di-submit
-    iframe.onload = function() {
+    // Respon saat data & foto berhasil masuk ke Google Drive & Sheets
+    document.getElementById('hidden_iframe').onload = function() {
       if (submitted) {
         Swal.fire({
           icon: 'success',
           title: 'Tugas Berhasil Dikirim!',
-          text: 'Game Anda telah tersimpan di Drive/Spreadsheet dan siap dimainkan!',
+          text: 'Data tugas & screenshot game Anda telah tersimpan di Drive!',
           confirmButtonColor: '#10b981',
           confirmButtonText: 'Lihat di Showcase 🎮'
         }).then(() => {
@@ -275,37 +133,27 @@
       }
     };
 
-    document.getElementById("submissionForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      
+    document.getElementById("submissionForm").addEventListener("submit", function(e) {
       const submitBtn = document.getElementById("submitBtn");
       const fileInput = document.getElementById("thumbnailFile");
       const file = fileInput.files[0];
 
       if (!file) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'File Gambar Kosong',
-          text: 'Pilih file screenshot cover game terlebih dahulu.',
-          confirmButtonColor: '#06b6d4'
-        });
+        e.preventDefault();
+        Swal.fire({ icon: 'warning', title: 'Foto Kosong', text: 'Pilih foto screenshot game dulu.' });
         return;
       }
 
-      if (file.size > 2 * 1024 * 1024) {
-        Swal.fire({
-          icon: 'error',
-          title: 'File Terlalu Besar',
-          text: 'Ukuran foto maksimal adalah 2 MB. Silakan pilih foto berukuran lebih kecil.',
-          confirmButtonColor: '#ef4444'
-        });
+      if (file.size > 1.5 * 1024 * 1024) {
+        e.preventDefault();
+        Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: 'Ukuran foto maksimal 1.5 MB.' });
         return;
       }
 
-      submitBtn.innerHTML = `<span>⏳</span> Mengunggah File & Data...`;
+      e.preventDefault();
+      submitBtn.innerHTML = `<span>⏳</span> Mengunggah Foto ke Drive...`;
       submitBtn.disabled = true;
 
-      // Konversi Gambar ke Base64 lalu masukkan ke hidden input form
       const reader = new FileReader();
       reader.onload = function() {
         document.getElementById("fileBase64").value = reader.result;
@@ -313,10 +161,8 @@
         document.getElementById("fileMimeType").value = file.type || "image/png";
 
         submitted = true;
-        // Submit form secara native ke target iframe tersembunyi
-        document.getElementById("submissionForm").submit();
+        document.getElementById("submissionForm").submit(); // Submit Native
       };
-
       reader.readAsDataURL(file);
     });
   </script>
