@@ -121,6 +121,11 @@
       transition: all 0.2s ease;
     }
 
+    .form-group input[type="file"] {
+      padding: 8px;
+      cursor: pointer;
+    }
+
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       outline: none;
       border-color: var(--accent-cyan);
@@ -150,7 +155,7 @@
 
   <header>
     <h1 class="hero-title">🎓 ZONA SISWA: FORM PENGUMPULAN</h1>
-    <p class="hero-subtitle">Isi data tugas Anda. Game akan langsung otomatis muncul di halaman galeri showcase!</p>
+    <p class="hero-subtitle">Isi data tugas Anda. Game & Thumbnail akan langsung otomatis muncul di galeri!</p>
     <nav>
       <a href="index.html" class="btn-nav">← Kembali ke Showcase Game</a>
     </nav>
@@ -187,9 +192,10 @@
           <input type="url" id="gameUrl" placeholder="https://username.github.io/repository-game/" required>
         </div>
 
+        <!-- UPLOAD FILE THUMBNAIL DARI LAPTOP/HP -->
         <div class="form-group">
-          <label for="thumbnailUrl">URL Screenshot / Banner Cover Game (Opsional)</label>
-          <input type="url" id="thumbnailUrl" placeholder="https://raw.githubusercontent.com/username/repo/main/screenshot.png">
+          <label for="thumbnailFile">Upload Screenshot / Cover Game (PNG / JPG)</label>
+          <input type="file" id="thumbnailFile" accept="image/*" required>
         </div>
 
         <div class="form-group">
@@ -214,33 +220,51 @@
       e.preventDefault();
       
       const submitBtn = document.getElementById("submitBtn");
-      submitBtn.innerText = "⏳ Sedang Mengirim...";
+      submitBtn.innerText = "⏳ Memproses & Mengunggah Gambar...";
       submitBtn.disabled = true;
 
-      const payload = {
-        namaSiswa: document.getElementById("namaSiswa").value,
-        kelas: document.getElementById("kelas").value,
-        judulGame: document.getElementById("judulGame").value,
-        kategori: document.getElementById("kategori").value,
-        gameUrl: document.getElementById("gameUrl").value,
-        thumbnailUrl: document.getElementById("thumbnailUrl").value,
-        deskripsi: document.getElementById("deskripsi").value
-      };
+      const fileInput = document.getElementById("thumbnailFile");
+      const file = fileInput.files[0];
 
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-
-        alert("🎉 Selamat! Game Anda berhasil dikirim dan siap dimainkan di Galeri Showcase.");
-        window.location.href = "index.html";
-      } catch (error) {
-        console.error(error);
-        alert("⚠️ Gagal mengirim data. Silakan coba lagi.");
+      if (!file) {
+        alert("Silakan pilih file gambar screenshot game terlebih dahulu.");
         submitBtn.innerText = "🚀 Kirim Tugas Game";
         submitBtn.disabled = false;
+        return;
       }
+
+      // Membaca file gambar sebagai Base64
+      const reader = new FileReader();
+      reader.onload = async function() {
+        const payload = {
+          namaSiswa: document.getElementById("namaSiswa").value,
+          kelas: document.getElementById("kelas").value,
+          judulGame: document.getElementById("judulGame").value,
+          kategori: document.getElementById("kategori").value,
+          gameUrl: document.getElementById("gameUrl").value,
+          deskripsi: document.getElementById("deskripsi").value,
+          fileBase64: reader.result,
+          fileName: `${Date.now()}_${file.name}`,
+          fileMimeType: file.type
+        };
+
+        try {
+          await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+          });
+
+          alert("🎉 Selamat! Game dan Gambar berhasil diunggah ke Drive & Showcase.");
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error(error);
+          alert("⚠️ Gagal mengirim data. Silakan coba lagi.");
+          submitBtn.innerText = "🚀 Kirim Tugas Game";
+          submitBtn.disabled = false;
+        }
+      };
+
+      reader.readAsDataURL(file);
     });
   </script>
 </body>
