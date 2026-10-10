@@ -188,6 +188,11 @@
         </div>
 
         <div class="form-group">
+          <label for="thumbnailUrl">URL Screenshot / Banner Cover Game (Opsional)</label>
+          <input type="url" id="thumbnailUrl" placeholder="https://raw.githubusercontent.com/username/repo/main/screenshot.png">
+        </div>
+
+        <div class="form-group">
           <label for="deskripsi">Deskripsi Singkat & Cara Bermain</label>
           <textarea id="deskripsi" rows="4" placeholder="Jelaskan secara singkat latar belakang game dan cara memainkannya..." required></textarea>
         </div>
@@ -198,7 +203,6 @@
   </main>
 
   <script>
-    // Proteksi Akses Langsung
     if (sessionStorage.getItem("siswaAuthenticated") !== "true") {
       alert("Akses ditolak! Silakan masuk melalui tombol Zona Siswa di halaman utama.");
       window.location.href = "index.html";
@@ -219,6 +223,7 @@
         judulGame: document.getElementById("judulGame").value,
         kategori: document.getElementById("kategori").value,
         gameUrl: document.getElementById("gameUrl").value,
+        thumbnailUrl: document.getElementById("thumbnailUrl").value,
         deskripsi: document.getElementById("deskripsi").value
       };
 
