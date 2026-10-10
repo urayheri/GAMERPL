@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengumpulan Tugas Game RPL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🚀 Pengumpulan Tugas Game</h1>
+    <p>Isi formulir di bawah ini untuk menampilkan karya game Anda di website galeri</p>
+    <nav>
+      <a href="index.html" class="btn-nav">← Kembali ke Galeri</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-box">
+      <form id="submissionForm">
+        <div class="form-group">
+          <label for="namaSiswa">Nama Siswa</label>
+          <input type="text" id="namaSiswa" placeholder="Contoh: Ahmad Yani" required>
+        </div>
+
+        <div class="form-group">
+          <label for="kelas">Kelas</label>
+          <input type="text" id="kelas" placeholder="Contoh: XI RPL 1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="judulGame">Judul Game</label>
+          <input type="text" id="judulGame" placeholder="Contoh: Congklak Nusantara" required>
+        </div>
+
+        <div class="form-group">
+          <label for="kategori">Kategori Game</label>
+          <select id="kategori" required>
+            <option value="Game Tradisional">Game Tradisional</option>
+            <option value="Game Edukasi">Game Edukasi</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="gameUrl">URL Live Demo Game (GitHub Pages/Vercel/Netlify)</label>
+          <input type="url" id="gameUrl" placeholder="https://username.github.io/nama-repo/" required>
+        </div>
+
+        <div class="form-group">
+          <label for="deskripsi">Deskripsi Singkat Game</label>
+          <textarea id="deskripsi" rows="3" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit-form">Kirim Tugas</button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbx492EqcyC4F6kETP2nDkvU4OtzJF-KL8azgLzx3CYiWFC_dX6udJl0mUfVOXC6wmppSQ/exec";
+
+    document.getElementById("submissionForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.innerText = "Mengirim...";
+      submitBtn.disabled = true;
+
+      const payload = {
+        namaSiswa: document.getElementById("namaSiswa").value,
+        kelas: document.getElementById("kelas").value,
+        judulGame: document.getElementById("judulGame").value,
+        kategori: document.getElementById("kategori").value,
+        gameUrl: document.getElementById("gameUrl").value,
+        deskripsi: document.getElementById("deskripsi").value
+      };
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        alert("Tugas game berhasil dikirim dan akan tampil otomatis di galeri!");
+        window.location.href = "index.html";
+      } catch (error) {
+        console.error(error);
+        alert("Gagal mengirim data. Silakan periksa koneksi internet Anda.");
+        submitBtn.innerText = "Kirim Tugas";
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
