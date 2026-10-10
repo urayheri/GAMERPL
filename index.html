@@ -94,14 +94,14 @@
       color: #fff;
     }
 
-    .btn-add {
+    .btn-student {
       background: linear-gradient(135deg, #10b981, #059669);
       border: none;
       color: white;
       box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
     }
 
-    .btn-add:hover {
+    .btn-student:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
     }
@@ -221,6 +221,7 @@
       box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
     }
 
+    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -244,6 +245,14 @@
       flex-direction: column;
       overflow: hidden;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-auth {
+      max-width: 420px;
+      height: auto;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 20px;
     }
 
     .modal-header {
@@ -277,6 +286,34 @@
       border: none;
       background: #fff;
     }
+
+    .auth-input {
+      width: 100%;
+      padding: 12px 16px;
+      margin: 1.2rem 0;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-auth-submit {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -289,7 +326,7 @@
       <button class="btn-filter active" onclick="filterGames('Semua')">🕹️ Semua Game</button>
       <button class="btn-filter" onclick="filterGames('Game Tradisional')">🏛️ Game Tradisional</button>
       <button class="btn-filter" onclick="filterGames('Game Edukasi')">🧠 Game Edukasi</button>
-      <a href="submit.html" class="btn-nav btn-add">➕ Kumpulkan Tugas Game</a>
+      <button class="btn-nav btn-student" onclick="openAuthModal()">🎓 Zona Siswa</button>
     </nav>
   </header>
 
@@ -299,6 +336,7 @@
     </div>
   </main>
 
+  <!-- Modal Mainkan Game -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -309,8 +347,25 @@
     </div>
   </div>
 
+  <!-- Modal Autentikasi Password Zona Siswa -->
+  <div id="authModal" class="modal">
+    <div class="modal-content modal-auth">
+      <h2 style="color: #fff; margin-bottom: 0.5rem;">🎓 Masuk Zona Siswa</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Masukkan password yang diberikan guru untuk mengakses pengumpulan tugas.</p>
+      
+      <input type="password" id="studentPassword" class="auth-input" placeholder="Masukkan Password..." onkeyup="if(event.key === 'Enter') verifyPassword()">
+      
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-auth-submit" onclick="verifyPassword()">Masuk</button>
+        <button class="btn-auth-submit" style="background: rgba(255,255,255,0.1);" onclick="closeAuthModal()">Batal</button>
+      </div>
+      <p id="authError" style="color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none;">Password salah! Silakan coba lagi.</p>
+    </div>
+  </div>
+
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx492EqcyC4F6kETP2nDkvU4OtzJF-KL8azgLzx3CYiWFC_dX6udJl0mUfVOXC6wmppSQ/exec";
+    const PASSWORD_SISWA = "rpljuara"; // GANTI PASSWORD DI SINI
     let gameData = [];
 
     document.addEventListener("DOMContentLoaded", loadGames);
@@ -384,6 +439,28 @@
     function closeModal() {
       document.getElementById("gameModal").style.display = "none";
       document.getElementById("gameFrame").src = "";
+    }
+
+    /* Modal Password Zona Siswa */
+    function openAuthModal() {
+      document.getElementById("authModal").style.display = "flex";
+      document.getElementById("studentPassword").focus();
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModal").style.display = "none";
+      document.getElementById("authError").style.display = "none";
+      document.getElementById("studentPassword").value = "";
+    }
+
+    function verifyPassword() {
+      const inputPass = document.getElementById("studentPassword").value;
+      if (inputPass === PASSWORD_SISWA) {
+        sessionStorage.setItem("siswaAuthenticated", "true");
+        window.location.href = "submit.html";
+      } else {
+        document.getElementById("authError").style.display = "block";
+      }
     }
   </script>
 </body>
