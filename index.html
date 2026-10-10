@@ -123,48 +123,49 @@
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
-      padding: 1.5rem;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       transition: all 0.3s ease;
       position: relative;
-      overflow: hidden;
-    }
-
-    .game-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
     .game-card:hover {
       transform: translateY(-6px);
       border-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
     }
 
-    .game-card:hover::before {
-      opacity: 1;
+    /* Thumbnail Gambar Game */
+    .game-thumb {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #1e293b;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .card-body {
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .badge {
-      padding: 5px 12px;
+      padding: 4px 10px;
       background: rgba(6, 182, 212, 0.15);
       border: 1px solid rgba(6, 182, 212, 0.3);
       color: #38bdf8;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       border-radius: 20px;
       text-transform: uppercase;
@@ -178,15 +179,15 @@
     }
 
     .game-card h3 {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .author {
       font-size: 0.85rem;
       color: var(--text-muted);
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .author strong {
@@ -194,9 +195,9 @@
     }
 
     .desc {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: #cbd5e1;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
       flex-grow: 1;
     }
 
@@ -336,7 +337,6 @@
     </div>
   </main>
 
-  <!-- Modal Mainkan Game -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -347,7 +347,6 @@
     </div>
   </div>
 
-  <!-- Modal Autentikasi Password Zona Siswa -->
   <div id="authModal" class="modal">
     <div class="modal-content modal-auth">
       <h2 style="color: #fff; margin-bottom: 0.5rem;">🎓 Masuk Zona Siswa</h2>
@@ -365,7 +364,8 @@
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx492EqcyC4F6kETP2nDkvU4OtzJF-KL8azgLzx3CYiWFC_dX6udJl0mUfVOXC6wmppSQ/exec";
-    const PASSWORD_SISWA = "rpljuara"; // GANTI PASSWORD DI SINI
+    const PASSWORD_SISWA = "rpljuara";
+    const DEFAULT_THUMB = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop"; 
     let gameData = [];
 
     document.addEventListener("DOMContentLoaded", loadGames);
@@ -394,21 +394,23 @@
       data.forEach(item => {
         const isTradisional = (item.Kategori || "").toLowerCase().includes("tradisional");
         const badgeClass = isTradisional ? "badge tradisional" : "badge";
+        const thumbUrl = item["Thumbnail URL"] && item["Thumbnail URL"].startsWith("http") ? item["Thumbnail URL"] : DEFAULT_THUMB;
 
         const card = document.createElement("div");
         card.className = "game-card";
         card.innerHTML = `
-          <div>
+          <img src="${thumbUrl}" alt="${item["Judul Game"]}" class="game-thumb" onerror="this.src='${DEFAULT_THUMB}'">
+          <div class="card-body">
             <div class="card-header">
               <span class="${badgeClass}">${item.Kategori || "Game"}</span>
             </div>
             <h3>${item["Judul Game"] || "Tanpa Judul"}</h3>
             <p class="author">Oleh: <strong>${item["Nama Siswa"] || "-"}</strong> (${item.Kelas || "-"})</p>
             <p class="desc">${item.Deskripsi || "-"}</p>
+            <button class="btn-play" onclick="openGame('${item["Game URL"]}', '${item["Judul Game"]}')">
+              <span>▶</span> Mainkan Sekarang
+            </button>
           </div>
-          <button class="btn-play" onclick="openGame('${item["Game URL"]}', '${item["Judul Game"]}')">
-            <span>▶</span> Mainkan Sekarang
-          </button>
         `;
         container.appendChild(card);
       });
@@ -441,7 +443,6 @@
       document.getElementById("gameFrame").src = "";
     }
 
-    /* Modal Password Zona Siswa */
     function openAuthModal() {
       document.getElementById("authModal").style.display = "flex";
       document.getElementById("studentPassword").focus();
