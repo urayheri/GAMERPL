@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <style>
@@ -20,6 +21,7 @@
       --text-muted: #94a3b8;
       --glass-border: rgba(255, 255, 255, 0.08);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body {
       background-color: var(--bg-primary);
@@ -54,10 +56,10 @@
 
   <main>
     <div class="form-box">
-      <!-- Hidden Iframe Pengaman Upload -->
+      <!-- Hidden Iframe Penampung Respon Google Apps Script -->
       <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
-      <form id="submissionForm" action="https://script.google.com/macros/s/AKfycbxm6EWSN6KpaH2QR9Jtznl3MJToPRD49zJZgPpjm8piLcsdED-aFnqfWTcYHJx6pbEo/exec" method="POST" target="hidden_iframe">
+      <form id="submissionForm" action="https://script.google.com/macros/s/AKfycby78xS9rAFrsiebhDMdDlbj0TAADsOYRm2J-SMNyx4tx93IOgva8-MMmCXGsz-cGPkp/exec" method="POST" target="hidden_iframe">
         <div class="form-group">
           <label for="namaSiswa">Nama Lengkap Siswa</label>
           <input type="text" id="namaSiswa" name="namaSiswa" placeholder="Contoh: Ahmad Yani" required>
@@ -96,7 +98,7 @@
           <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
         </div>
 
-        <!-- Dynamic Inputs -->
+        <!-- Hidden Inputs Data Gambar Base64 -->
         <input type="hidden" id="fileBase64" name="fileBase64">
         <input type="hidden" id="fileName" name="fileName">
         <input type="hidden" id="fileMimeType" name="fileMimeType">
@@ -116,11 +118,11 @@
         .then(() => { window.location.href = "index.html"; });
     }
 
-    let submitted = false;
+    let isSubmitted = false;
 
-    // Respon saat data & foto berhasil masuk ke Google Drive & Sheets
+    // Deteksi saat data berhasil diterima oleh Apps Script via Iframe
     document.getElementById('hidden_iframe').onload = function() {
-      if (submitted) {
+      if (isSubmitted) {
         Swal.fire({
           icon: 'success',
           title: 'Tugas Berhasil Dikirim!',
@@ -140,17 +142,17 @@
 
       if (!file) {
         e.preventDefault();
-        Swal.fire({ icon: 'warning', title: 'Foto Kosong', text: 'Pilih foto screenshot game dulu.' });
+        Swal.fire({ icon: 'warning', title: 'Foto Kosong', text: 'Pilih foto screenshot game terlebih dahulu.' });
         return;
       }
 
       if (file.size > 1.5 * 1024 * 1024) {
         e.preventDefault();
-        Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: 'Ukuran foto maksimal 1.5 MB.' });
+        Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: 'Ukuran foto maksimal adalah 1.5 MB.' });
         return;
       }
 
-      e.preventDefault();
+      e.preventDefault(); // Tahan pengiriman sejenak untuk memproses string Base64 gambar
       submitBtn.innerHTML = `<span>⏳</span> Mengunggah Foto ke Drive...`;
       submitBtn.disabled = true;
 
@@ -160,8 +162,8 @@
         document.getElementById("fileName").value = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
         document.getElementById("fileMimeType").value = file.type || "image/png";
 
-        submitted = true;
-        document.getElementById("submissionForm").submit(); // Submit Native
+        isSubmitted = true;
+        document.getElementById("submissionForm").submit(); // Kirim secara Native Form Submit
       };
       reader.readAsDataURL(file);
     });
