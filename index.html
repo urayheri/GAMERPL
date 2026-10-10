@@ -336,7 +336,6 @@
     </div>
   </main>
 
-  <!-- Modal Frame Mainkan Game -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -347,7 +346,6 @@
     </div>
   </div>
 
-  <!-- Modal Authentikasi Zona Siswa -->
   <div id="authModal" class="modal">
     <div class="modal-content modal-auth">
       <h2 style="color: #fff; margin-bottom: 0.5rem;">🎓 Masuk Zona Siswa</h2>
@@ -383,6 +381,19 @@
       }
     }
 
+    // Formatter khusus agar URL foto Google Drive pasti bisa tampil di tag <img>
+    function formatDriveUrl(url) {
+      if (!url || typeof url !== 'string' || !url.startsWith("http")) return DEFAULT_THUMB;
+      
+      if (url.includes("drive.google.com") || url.includes("lh3.googleusercontent.com")) {
+        const match = url.match(/[-\w]{25,}/);
+        if (match && match[0]) {
+          return `https://drive.google.com/uc?export=view&id=${match[0]}`;
+        }
+      }
+      return url;
+    }
+
     function renderGames(data) {
       const container = document.getElementById("gameContainer");
       container.innerHTML = "";
@@ -395,12 +406,14 @@
       data.forEach(item => {
         const isTradisional = (item.Kategori || "").toLowerCase().includes("tradisional");
         const badgeClass = isTradisional ? "badge tradisional" : "badge";
-        const thumbUrl = item["Thumbnail URL"] && item["Thumbnail URL"].startsWith("http") ? item["Thumbnail URL"] : DEFAULT_THUMB;
+        
+        const rawThumb = item["Thumbnail URL"] || item["thumbnailUrl"] || "";
+        const thumbUrl = formatDriveUrl(rawThumb);
 
         const card = document.createElement("div");
         card.className = "game-card";
         card.innerHTML = `
-          <img src="${thumbUrl}" alt="${item["Judul Game"]}" class="game-thumb" onerror="this.src='${DEFAULT_THUMB}'">
+          <img src="${thumbUrl}" alt="${item["Judul Game"]}" class="game-thumb" onerror="this.onerror=null; this.src='${DEFAULT_THUMB}';">
           <div class="card-body">
             <div class="card-header">
               <span class="${badgeClass}">${item.Kategori || "Game"}</span>
