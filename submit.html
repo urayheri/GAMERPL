@@ -4,11 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pengumpulan Tugas Game RPL - Zona Siswa</title>
+  <link rel="icon" type="image/svg+xml" href="https://api.iconify.design/lucide:gamepad-2.svg?color=%2306b6d4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="https://api.iconify.design/lucide:gamepad-2.svg?color=%2306b6d4">
   
+  <!-- SweetAlert2 CSS untuk Notifikasi Modern -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
   <style>
     :root {
       --bg-primary: #0f172a;
@@ -144,11 +147,36 @@
       font-weight: 700;
       cursor: pointer;
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .btn-submit-form:hover {
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
       filter: brightness(1.1);
+    }
+
+    .btn-submit-form:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+
+    /* Kustomisasi Tema Dark SweetAlert2 */
+    .swal2-popup {
+      background: #1e293b !important;
+      color: #f8fafc !important;
+      border: 1px solid var(--glass-border) !important;
+      border-radius: 16px !important;
+      backdrop-filter: blur(16px);
+    }
+    .swal2-title {
+      color: #f8fafc !important;
+    }
+    .swal2-html-container {
+      color: #94a3b8 !important;
     }
   </style>
 </head>
@@ -156,7 +184,7 @@
 
   <header>
     <h1 class="hero-title">🎓 ZONA SISWA: FORM PENGUMPULAN</h1>
-    <p class="hero-subtitle">Isi data tugas Anda. Game & Thumbnail akan langsung otomatis muncul di galeri!</p>
+    <p class="hero-subtitle">Isi data tugas Anda. Game & Cover akan langsung otomatis muncul di Galeri Showcase!</p>
     <nav>
       <a href="index.html" class="btn-nav">← Kembali ke Showcase Game</a>
     </nav>
@@ -193,26 +221,37 @@
           <input type="url" id="gameUrl" placeholder="https://username.github.io/repository-game/" required>
         </div>
 
-        <!-- UPLOAD FILE THUMBNAIL DARI LAPTOP/HP -->
         <div class="form-group">
-          <label for="thumbnailFile">Upload Screenshot / Cover Game (PNG / JPG)</label>
+          <label for="thumbnailFile">Upload Screenshot / Cover Game (PNG / JPG / WEBP)</label>
           <input type="file" id="thumbnailFile" accept="image/*" required>
         </div>
 
         <div class="form-group">
           <label for="deskripsi">Deskripsi Singkat & Cara Bermain</label>
-          <textarea id="deskripsi" rows="4" placeholder="Jelaskan secara singkat latar belakang game dan cara memainkannya..." required></textarea>
+          <textarea id="deskripsi" rows="4" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn-submit-form">🚀 Kirim Tugas Game</button>
+        <button type="submit" id="submitBtn" class="btn-submit-form">
+          <span>🚀</span> Kirim Tugas Game
+        </button>
       </form>
     </div>
   </main>
 
+  <!-- SweetAlert2 JavaScript Library -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
+    // Proteksi Akses Langsung
     if (sessionStorage.getItem("siswaAuthenticated") !== "true") {
-      alert("Akses ditolak! Silakan masuk melalui tombol Zona Siswa di halaman utama.");
-      window.location.href = "index.html";
+      Swal.fire({
+        icon: 'error',
+        title: 'Akses Ditolak!',
+        text: 'Silakan masuk melalui tombol Zona Siswa di halaman utama.',
+        confirmButtonColor: '#06b6d4'
+      }).then(() => {
+        window.location.href = "index.html";
+      });
     }
 
     const API_URL = "https://script.google.com/macros/s/AKfycbx492EqcyC4F6kETP2nDkvU4OtzJF-KL8azgLzx3CYiWFC_dX6udJl0mUfVOXC6wmppSQ/exec";
@@ -221,22 +260,50 @@
       e.preventDefault();
       
       const submitBtn = document.getElementById("submitBtn");
-      submitBtn.innerText = "⏳ Memproses & Mengunggah Gambar...";
+      submitBtn.innerHTML = `<span>⏳</span> Mengunggah File & Data...`;
       submitBtn.disabled = true;
 
       const fileInput = document.getElementById("thumbnailFile");
       const file = fileInput.files[0];
 
       if (!file) {
-        alert("Silakan pilih file gambar screenshot game terlebih dahulu.");
-        submitBtn.innerText = "🚀 Kirim Tugas Game";
+        Swal.fire({
+          icon: 'warning',
+          title: 'File Gambar Kosong',
+          text: 'Pilih file screenshot cover game terlebih dahulu.',
+          confirmButtonColor: '#06b6d4'
+        });
+        submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
         submitBtn.disabled = false;
         return;
       }
 
-      // Membaca file gambar sebagai Base64
-      const reader = new FileReader();
-      reader.onload = async function() {
+      // Validasi Ukuran File (Maksimal 3MB)
+      if (file.size > 3 * 1024 * 1024) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Ukuran File Terlalu Besar',
+          text: 'Ukuran foto maksimal adalah 3 MB. Silakan kompres foto Anda terlebih dahulu.',
+          confirmButtonColor: '#ef4444'
+        });
+        submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // Helper Reader File ke Base64
+      const getBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        });
+      };
+
+      try {
+        const base64String = await getBase64(file);
+
         const payload = {
           namaSiswa: document.getElementById("namaSiswa").value,
           kelas: document.getElementById("kelas").value,
@@ -244,28 +311,41 @@
           kategori: document.getElementById("kategori").value,
           gameUrl: document.getElementById("gameUrl").value,
           deskripsi: document.getElementById("deskripsi").value,
-          fileBase64: reader.result,
-          fileName: `${Date.now()}_${file.name}`,
-          fileMimeType: file.type
+          fileBase64: base64String,
+          fileName: `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`,
+          fileMimeType: file.type || "image/png"
         };
 
-        try {
-          await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify(payload)
-          });
+        // Kirim Data via Fetch API
+        await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
 
-          alert("🎉 Selamat! Game dan Gambar berhasil diunggah ke Drive & Showcase.");
+        // Notifikasi Sukses Modern
+        Swal.fire({
+          icon: 'success',
+          title: 'Tugas Berhasil Dikirim!',
+          text: 'Game Anda telah tersimpan dan siap dimainkan di Galeri Showcase.',
+          confirmButtonColor: '#10b981',
+          confirmButtonText: 'Lihat di Showcase 🎮'
+        }).then(() => {
           window.location.href = "index.html";
-        } catch (error) {
-          console.error(error);
-          alert("⚠️ Gagal mengirim data. Silakan coba lagi.");
-          submitBtn.innerText = "🚀 Kirim Tugas Game";
-          submitBtn.disabled = false;
-        }
-      };
+        });
 
-      reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error submit:", error);
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Mengirim Data',
+          text: 'Terjadi kendala koneksi saat mengunggah data. Silakan coba beberapa saat lagi.',
+          confirmButtonColor: '#ef4444'
+        });
+
+        submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
+        submitBtn.disabled = false;
+      }
     });
   </script>
 </body>
