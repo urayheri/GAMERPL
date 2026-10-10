@@ -381,19 +381,19 @@
       }
     }
 
-    // Formatter khusus agar URL foto Google Drive pasti bisa tampil di tag <img>
-    function formatDriveUrl(url) {
-      if (!url || typeof url !== 'string' || !url.startsWith("http")) return DEFAULT_THUMB;
-      
-      if (url.includes("drive.google.com") || url.includes("lh3.googleusercontent.com")) {
-        const match = url.match(/[-\w]{25,}/);
-        if (match && match[0]) {
-          return `https://drive.google.com/uc?export=view&id=${match[0]}`;
-        }
-      }
-      return url;
-    }
-
+   
+    // Formatter gambar Google Drive tercepat & anti-CORS untuk tag <img>
+function formatDriveUrl(url) {
+  if (!url || typeof url !== 'string' || !url.startsWith("http")) return DEFAULT_THUMB;
+  
+  // Ekstrak ID File Google Drive dari link manapun
+  const match = url.match(/[-\w]{25,}/);
+  if (match && match[0]) {
+    // Format CDN Direct Image Google
+    return `https://lh3.googleusercontent.com/d/${match[0]}`;
+  }
+  return url;
+}
     function renderGames(data) {
       const container = document.getElementById("gameContainer");
       container.innerHTML = "";
