@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <style>
@@ -56,7 +55,6 @@
 
   <main>
     <div class="form-box">
-      <!-- Hidden Iframe Penampung Respon Apps Script -->
       <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
       <form id="submissionForm" action="https://script.google.com/macros/s/AKfycby78xS9rAFrsiebhDMdDlbj0TAADsOYRm2J-SMNyx4tx93IOgva8-MMmCXGsz-cGPkp/exec" method="POST" target="hidden_iframe">
@@ -98,6 +96,7 @@
           <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
         </div>
 
+        <!-- Hidden Inputs Data Gambar -->
         <input type="hidden" id="fileBase64" name="fileBase64">
         <input type="hidden" id="fileName" name="fileName">
         <input type="hidden" id="fileMimeType" name="fileMimeType">
@@ -133,37 +132,56 @@
       }
     };
 
-    document.getElementById("submissionForm").addEventListener("submit", function(e) {
+    const form = document.getElementById("submissionForm");
+    
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault(); // Hentikan submit awal
+
       const submitBtn = document.getElementById("submitBtn");
       const fileInput = document.getElementById("thumbnailFile");
       const file = fileInput.files[0];
 
       if (!file) {
-        e.preventDefault();
         Swal.fire({ icon: 'warning', title: 'Foto Kosong', text: 'Pilih foto screenshot game terlebih dahulu.' });
         return;
       }
 
       if (file.size > 1.5 * 1024 * 1024) {
-        e.preventDefault();
         Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: 'Ukuran foto maksimal adalah 1.5 MB.' });
         return;
       }
 
-      e.preventDefault();
-      submitBtn.innerHTML = `<span>⏳</span> Mengunggah Foto ke Drive...`;
+      submitBtn.innerHTML = `<span>⏳</span> Memproses Foto & Mengunggah...`;
       submitBtn.disabled = true;
 
-      const reader = new FileReader();
-      reader.onload = function() {
-        document.getElementById("fileBase64").value = reader.result;
+      // Gunakan Promise agar dipastikan Base64 terisi SEBELUM form dikirim
+      const getBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        });
+      };
+
+      try {
+        const base64Data = await getBase64(file);
+        
+        // Isi nilai ke hidden input form
+        document.getElementById("fileBase64").value = base64Data;
         document.getElementById("fileName").value = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
         document.getElementById("fileMimeType").value = file.type || "image/png";
 
         isSubmitted = true;
-        document.getElementById("submissionForm").submit();
-      };
-      reader.readAsDataURL(file);
+        // Sekarang submit form secara native via HTML Form Element method
+        HTMLFormElement.prototype.submit.call(form);
+
+      } catch (err) {
+        console.error("Gagal membaca file gambar:", err);
+        Swal.fire({ icon: 'error', title: 'Gagal Membaca File', text: 'Silakan pilih foto lain.' });
+        submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
+        submitBtn.disabled = false;
+      }
     });
   </script>
 </body>
