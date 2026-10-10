@@ -56,7 +56,7 @@
 
   <main>
     <div class="form-box">
-      <!-- Hidden Iframe Penampung Respon Google Apps Script -->
+      <!-- Hidden Iframe Penampung Respon Apps Script -->
       <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
       <form id="submissionForm" action="https://script.google.com/macros/s/AKfycby78xS9rAFrsiebhDMdDlbj0TAADsOYRm2J-SMNyx4tx93IOgva8-MMmCXGsz-cGPkp/exec" method="POST" target="hidden_iframe">
@@ -98,7 +98,6 @@
           <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
         </div>
 
-        <!-- Hidden Inputs Data Gambar Base64 -->
         <input type="hidden" id="fileBase64" name="fileBase64">
         <input type="hidden" id="fileName" name="fileName">
         <input type="hidden" id="fileMimeType" name="fileMimeType">
@@ -120,7 +119,6 @@
 
     let isSubmitted = false;
 
-    // Deteksi saat data berhasil diterima oleh Apps Script via Iframe
     document.getElementById('hidden_iframe').onload = function() {
       if (isSubmitted) {
         Swal.fire({
@@ -152,7 +150,7 @@
         return;
       }
 
-      e.preventDefault(); // Tahan pengiriman sejenak untuk memproses string Base64 gambar
+      e.preventDefault();
       submitBtn.innerHTML = `<span>⏳</span> Mengunggah Foto ke Drive...`;
       submitBtn.disabled = true;
 
@@ -163,7 +161,7 @@
         document.getElementById("fileMimeType").value = file.type || "image/png";
 
         isSubmitted = true;
-        document.getElementById("submissionForm").submit(); // Kirim secara Native Form Submit
+        document.getElementById("submissionForm").submit();
       };
       reader.readAsDataURL(file);
     });
