@@ -4,15 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pengumpulan Tugas Game RPL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header>
-    <h1>🚀 Pengumpulan Tugas Game</h1>
-    <p>Isi formulir di bawah ini untuk menampilkan karya game Anda di website galeri</p>
+    <h1 class="hero-title">🚀 FORM PENGUMPULAN GAME</h1>
+    <p class="hero-subtitle">Isi data tugas Anda. Game akan langsung otomatis muncul di halaman galeri showcase!</p>
     <nav>
-      <a href="index.html" class="btn-nav">← Kembali ke Galeri</a>
+      <a href="index.html" class="btn-nav">← Kembali ke Showcase Game</a>
     </nav>
   </header>
 
@@ -20,18 +23,18 @@
     <div class="form-box">
       <form id="submissionForm">
         <div class="form-group">
-          <label for="namaSiswa">Nama Siswa</label>
+          <label for="namaSiswa">Nama Lengkap Siswa</label>
           <input type="text" id="namaSiswa" placeholder="Contoh: Ahmad Yani" required>
         </div>
 
         <div class="form-group">
-          <label for="kelas">Kelas</label>
+          <label for="kelas">Kelas / Jurusan</label>
           <input type="text" id="kelas" placeholder="Contoh: XI RPL 1" required>
         </div>
 
         <div class="form-group">
           <label for="judulGame">Judul Game</label>
-          <input type="text" id="judulGame" placeholder="Contoh: Congklak Nusantara" required>
+          <input type="text" id="judulGame" placeholder="Contoh: Petualangan Congklak" required>
         </div>
 
         <div class="form-group">
@@ -43,16 +46,16 @@
         </div>
 
         <div class="form-group">
-          <label for="gameUrl">URL Live Demo Game (GitHub Pages/Vercel/Netlify)</label>
-          <input type="url" id="gameUrl" placeholder="https://username.github.io/nama-repo/" required>
+          <label for="gameUrl">URL Live Demo Game (GitHub Pages / Vercel / Netlify)</label>
+          <input type="url" id="gameUrl" placeholder="https://username.github.io/repository-game/" required>
         </div>
 
         <div class="form-group">
-          <label for="deskripsi">Deskripsi Singkat Game</label>
-          <textarea id="deskripsi" rows="3" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
+          <label for="deskripsi">Deskripsi Singkat & Cara Bermain</label>
+          <textarea id="deskripsi" rows="4" placeholder="Jelaskan secara singkat latar belakang game dan cara memainkannya..." required></textarea>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn-submit-form">Kirim Tugas</button>
+        <button type="submit" id="submitBtn" class="btn-submit-form">🚀 Kirim Tugas Game</button>
       </form>
     </div>
   </main>
@@ -64,7 +67,7 @@
       e.preventDefault();
       
       const submitBtn = document.getElementById("submitBtn");
-      submitBtn.innerText = "Mengirim...";
+      submitBtn.innerText = "⏳ Sedang Mengirim...";
       submitBtn.disabled = true;
 
       const payload = {
@@ -82,12 +85,12 @@
           body: JSON.stringify(payload)
         });
 
-        alert("Tugas game berhasil dikirim dan akan tampil otomatis di galeri!");
+        alert("🎉 Selamat! Game Anda berhasil dikirim dan siap dimainkan di Galeri Showcase.");
         window.location.href = "index.html";
       } catch (error) {
         console.error(error);
-        alert("Gagal mengirim data. Silakan periksa koneksi internet Anda.");
-        submitBtn.innerText = "Kirim Tugas";
+        alert("⚠️ Gagal mengirim data. Silakan coba lagi.");
+        submitBtn.innerText = "🚀 Kirim Tugas Game";
         submitBtn.disabled = false;
       }
     });
