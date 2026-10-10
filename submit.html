@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pengumpulan Tugas Game RPL</title>
+  <title>Pengumpulan Tugas Game RPL - Zona Siswa</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -149,7 +149,7 @@
 <body>
 
   <header>
-    <h1 class="hero-title">🚀 FORM PENGUMPULAN GAME</h1>
+    <h1 class="hero-title">🎓 ZONA SISWA: FORM PENGUMPULAN</h1>
     <p class="hero-subtitle">Isi data tugas Anda. Game akan langsung otomatis muncul di halaman galeri showcase!</p>
     <nav>
       <a href="index.html" class="btn-nav">← Kembali ke Showcase Game</a>
@@ -198,6 +198,12 @@
   </main>
 
   <script>
+    // Proteksi Akses Langsung
+    if (sessionStorage.getItem("siswaAuthenticated") !== "true") {
+      alert("Akses ditolak! Silakan masuk melalui tombol Zona Siswa di halaman utama.");
+      window.location.href = "index.html";
+    }
+
     const API_URL = "https://script.google.com/macros/s/AKfycbx492EqcyC4F6kETP2nDkvU4OtzJF-KL8azgLzx3CYiWFC_dX6udJl0mUfVOXC6wmppSQ/exec";
 
     document.getElementById("submissionForm").addEventListener("submit", async function(e) {
