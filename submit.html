@@ -188,25 +188,28 @@
 
   <main>
     <div class="form-box">
-      <form id="submissionForm">
+      <!-- Hidden iframe untuk menangkap submit form tanpa terpengaruh CORS -->
+      <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+      <form id="submissionForm" action="https://script.google.com/macros/s/AKfycbxm6EWSN6KpaH2QR9Jtznl3MJToPRD49zJZgPpjm8piLcsdED-aFnqfWTcYHJx6pbEo/exec" method="POST" target="hidden_iframe">
         <div class="form-group">
           <label for="namaSiswa">Nama Lengkap Siswa</label>
-          <input type="text" id="namaSiswa" placeholder="Contoh: Ahmad Yani" required>
+          <input type="text" id="namaSiswa" name="namaSiswa" placeholder="Contoh: Ahmad Yani" required>
         </div>
 
         <div class="form-group">
           <label for="kelas">Kelas / Jurusan</label>
-          <input type="text" id="kelas" placeholder="Contoh: XI RPL 1" required>
+          <input type="text" id="kelas" name="kelas" placeholder="Contoh: XI RPL 1" required>
         </div>
 
         <div class="form-group">
           <label for="judulGame">Judul Game</label>
-          <input type="text" id="judulGame" placeholder="Contoh: Petualangan Congklak" required>
+          <input type="text" id="judulGame" name="judulGame" placeholder="Contoh: Petualangan Congklak" required>
         </div>
 
         <div class="form-group">
           <label for="kategori">Kategori Game</label>
-          <select id="kategori" required>
+          <select id="kategori" name="kategori" required>
             <option value="Game Tradisional">Game Tradisional</option>
             <option value="Game Edukasi">Game Edukasi</option>
           </select>
@@ -214,7 +217,7 @@
 
         <div class="form-group">
           <label for="gameUrl">URL Live Demo Game (GitHub Pages / Vercel / Netlify)</label>
-          <input type="url" id="gameUrl" placeholder="https://username.github.io/repository-game/" required>
+          <input type="url" id="gameUrl" name="gameUrl" placeholder="https://username.github.io/repository-game/" required>
         </div>
 
         <div class="form-group">
@@ -224,8 +227,13 @@
 
         <div class="form-group">
           <label for="deskripsi">Deskripsi Singkat & Cara Bermain</label>
-          <textarea id="deskripsi" rows="4" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
+          <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
         </div>
+
+        <!-- Hidden inputs untuk menampung data gambar -->
+        <input type="hidden" id="fileBase64" name="fileBase64">
+        <input type="hidden" id="fileName" name="fileName">
+        <input type="hidden" id="fileMimeType" name="fileMimeType">
 
         <button type="submit" id="submitBtn" class="btn-submit-form">
           <span>🚀</span> Kirim Tugas Game
@@ -237,6 +245,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
+    // Proteksi Akses
     if (sessionStorage.getItem("siswaAuthenticated") !== "true") {
       Swal.fire({
         icon: 'error',
@@ -248,15 +257,28 @@
       });
     }
 
-    const API_URL = "https://script.google.com/macros/s/AKfycby78xS9rAFrsiebhDMdDlbj0TAADsOYRm2J-SMNyx4tx93IOgva8-MMmCXGsz-cGPkp/exec";
+    let submitted = false;
+    const iframe = document.getElementById('hidden_iframe');
+
+    // Menagkap respons saat iframe selesai loading setelah form di-submit
+    iframe.onload = function() {
+      if (submitted) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Tugas Berhasil Dikirim!',
+          text: 'Game Anda telah tersimpan di Drive/Spreadsheet dan siap dimainkan!',
+          confirmButtonColor: '#10b981',
+          confirmButtonText: 'Lihat di Showcase 🎮'
+        }).then(() => {
+          window.location.href = "index.html";
+        });
+      }
+    };
 
     document.getElementById("submissionForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       
       const submitBtn = document.getElementById("submitBtn");
-      submitBtn.innerHTML = `<span>⏳</span> Mengunggah File & Data...`;
-      submitBtn.disabled = true;
-
       const fileInput = document.getElementById("thumbnailFile");
       const file = fileInput.files[0];
 
@@ -267,8 +289,6 @@
           text: 'Pilih file screenshot cover game terlebih dahulu.',
           confirmButtonColor: '#06b6d4'
         });
-        submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
-        submitBtn.disabled = false;
         return;
       }
 
@@ -279,70 +299,25 @@
           text: 'Ukuran foto maksimal adalah 2 MB. Silakan pilih foto berukuran lebih kecil.',
           confirmButtonColor: '#ef4444'
         });
-        submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
-        submitBtn.disabled = false;
         return;
       }
 
-      const getBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = (error) => reject(error);
-        });
+      submitBtn.innerHTML = `<span>⏳</span> Mengunggah File & Data...`;
+      submitBtn.disabled = true;
+
+      // Konversi Gambar ke Base64 lalu masukkan ke hidden input form
+      const reader = new FileReader();
+      reader.onload = function() {
+        document.getElementById("fileBase64").value = reader.result;
+        document.getElementById("fileName").value = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
+        document.getElementById("fileMimeType").value = file.type || "image/png";
+
+        submitted = true;
+        // Submit form secara native ke target iframe tersembunyi
+        document.getElementById("submissionForm").submit();
       };
 
-      try {
-        const base64String = await getBase64(file);
-
-        const payload = {
-          namaSiswa: document.getElementById("namaSiswa").value,
-          kelas: document.getElementById("kelas").value,
-          judulGame: document.getElementById("judulGame").value,
-          kategori: document.getElementById("kategori").value,
-          gameUrl: document.getElementById("gameUrl").value,
-          deskripsi: document.getElementById("deskripsi").value,
-          fileBase64: base64String,
-          fileName: `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`,
-          fileMimeType: file.type || "image/png"
-        };
-
-        // Menggunakan text/plain & no-cors untuk memastikan Apps Script menerima data tanpa terhadang CORS
-        await fetch(API_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        setTimeout(() => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Tugas Berhasil Dikirim!',
-            text: 'Game Anda telah tersimpan dan siap dimainkan di Galeri Showcase.',
-            confirmButtonColor: '#10b981',
-            confirmButtonText: 'Lihat di Showcase 🎮'
-          }).then(() => {
-            window.location.href = "index.html";
-          });
-        }, 1500);
-
-      } catch (error) {
-        console.error("Error submit:", error);
-        
-        Swal.fire({
-          icon: 'error',
-          title: 'Gagal Mengirim Data',
-          text: 'Terjadi kendala saat mengunggah. Silakan coba lagi.',
-          confirmButtonColor: '#ef4444'
-        });
-
-        submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
-        submitBtn.disabled = false;
-      }
+      reader.readAsDataURL(file);
     });
   </script>
 </body>
