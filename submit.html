@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- SweetAlert2 Dark Theme -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <style>
@@ -163,7 +162,6 @@
       cursor: not-allowed;
     }
 
-    /* Modal SweetAlert Custom Style */
     .swal2-popup {
       background: #1e293b !important;
       color: #f8fafc !important;
@@ -239,7 +237,6 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    // Proteksi Akses Zona Siswa
     if (sessionStorage.getItem("siswaAuthenticated") !== "true") {
       Swal.fire({
         icon: 'error',
@@ -275,12 +272,11 @@
         return;
       }
 
-      // Validasi Ukuran File (Maksimal 3MB)
-      if (file.size > 3 * 1024 * 1024) {
+      if (file.size > 2 * 1024 * 1024) {
         Swal.fire({
           icon: 'error',
           title: 'File Terlalu Besar',
-          text: 'Ukuran foto maksimal adalah 3 MB.',
+          text: 'Ukuran foto maksimal adalah 2 MB. Silakan pilih foto berukuran lebih kecil.',
           confirmButtonColor: '#ef4444'
         });
         submitBtn.innerHTML = `<span>🚀</span> Kirim Tugas Game`;
@@ -312,20 +308,27 @@
           fileMimeType: file.type || "image/png"
         };
 
+        // Menggunakan text/plain & no-cors untuk memastikan Apps Script menerima data tanpa terhadang CORS
         await fetch(API_URL, {
           method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
           body: JSON.stringify(payload)
         });
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Tugas Berhasil Dikirim!',
-          text: 'Game Anda telah tersimpan dan siap dimainkan di Galeri Showcase.',
-          confirmButtonColor: '#10b981',
-          confirmButtonText: 'Lihat di Showcase 🎮'
-        }).then(() => {
-          window.location.href = "index.html";
-        });
+        setTimeout(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Tugas Berhasil Dikirim!',
+            text: 'Game Anda telah tersimpan dan siap dimainkan di Galeri Showcase.',
+            confirmButtonColor: '#10b981',
+            confirmButtonText: 'Lihat di Showcase 🎮'
+          }).then(() => {
+            window.location.href = "index.html";
+          });
+        }, 1500);
 
       } catch (error) {
         console.error("Error submit:", error);
