@@ -247,12 +247,14 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
 
-    .modal-auth {
-      max-width: 420px;
+    .modal-auth, .modal-submit {
+      max-width: 500px;
       height: auto;
+      max-height: 90vh;
       padding: 2rem;
-      text-align: center;
+      text-align: left;
       border-radius: 20px;
+      overflow-y: auto;
     }
 
     .modal-header {
@@ -287,21 +289,40 @@
       background: #fff;
     }
 
-    .auth-input {
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+
+    .auth-input, .form-control {
       width: 100%;
-      padding: 12px 16px;
-      margin: 1.2rem 0;
+      padding: 10px 14px;
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--glass-border);
       border-radius: 10px;
       color: white;
-      font-size: 1rem;
-      text-align: center;
+      font-size: 0.95rem;
     }
 
-    .auth-input:focus {
+    .auth-input:focus, .form-control:focus {
       outline: none;
       border-color: var(--accent-cyan);
+    }
+
+    select.form-control {
+      cursor: pointer;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
     }
 
     .btn-auth-submit {
@@ -313,6 +334,11 @@
       border-radius: 10px;
       font-weight: 700;
       cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-auth-submit:hover {
+      filter: brightness(1.1);
     }
   </style>
 </head>
@@ -336,6 +362,7 @@
     </div>
   </main>
 
+  <!-- Modal Frame Game -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -346,18 +373,72 @@
     </div>
   </div>
 
+  <!-- Modal Auth (Password Guru) -->
   <div id="authModal" class="modal">
     <div class="modal-content modal-auth">
-      <h2 style="color: #fff; margin-bottom: 0.5rem;">🎓 Masuk Zona Siswa</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem;">Masukkan password yang diberikan guru untuk mengakses pengumpulan tugas.</p>
+      <h2 style="color: #fff; margin-bottom: 0.5rem; text-align: center;">🎓 Masuk Zona Siswa</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 1rem;">Masukkan password yang diberikan guru untuk mengumpulkan tugas.</p>
       
-      <input type="password" id="studentPassword" class="auth-input" placeholder="Masukkan Password..." onkeyup="if(event.key === 'Enter') verifyPassword()">
+      <input type="password" id="studentPassword" class="auth-input" placeholder="Masukkan Password..." onkeyup="if(event.key === 'Enter') verifyPassword()" style="text-align: center;">
       
-      <div style="display: flex; gap: 10px;">
+      <div style="display: flex; gap: 10px; margin-top: 1rem;">
         <button class="btn-auth-submit" onclick="verifyPassword()">Masuk</button>
         <button class="btn-auth-submit" style="background: rgba(255,255,255,0.1);" onclick="closeAuthModal()">Batal</button>
       </div>
-      <p id="authError" style="color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none;">Password salah! Silakan coba lagi.</p>
+      <p id="authError" style="color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none; text-align: center;">Password salah! Silakan coba lagi.</p>
+    </div>
+  </div>
+
+  <!-- Modal Form Pengumpulan Game -->
+  <div id="submitModal" class="modal">
+    <div class="modal-content modal-submit">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="color: #fff;">🚀 Pengumpulan Aplikasi</h2>
+        <button class="close-btn" onclick="closeSubmitModal()">&times;</button>
+      </div>
+      
+      <form id="submitGameForm" onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label for="namaSiswa">Nama Siswa / Kelompok</label>
+          <input type="text" id="namaSiswa" class="form-control" placeholder="Contoh: Budi Santoso" required>
+        </div>
+
+        <div class="form-group">
+          <label for="kelasSiswa">Kelas</label>
+          <input type="text" id="kelasSiswa" class="form-control" placeholder="Contoh: XII RPL 1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="judulGame">Judul Game / Aplikasi</label>
+          <input type="text" id="judulGame" class="form-control" placeholder="Contoh: Petualangan Congklak" required>
+        </div>
+
+        <div class="form-group">
+          <label for="kategoriGame">Kategori</label>
+          <select id="kategoriGame" class="form-control" required>
+            <option value="Game Tradisional">Game Tradisional</option>
+            <option value="Game Edukasi">Game Edukasi</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="deskripsiGame">Deskripsi Singkat</label>
+          <textarea id="deskripsiGame" class="form-control" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="gameUrl">URL Game (Link Web / Playable)</label>
+          <input type="url" id="gameUrl" class="form-control" placeholder="https://..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="thumbUrl">URL Thumbnail (Link Google Drive / Gambar)</label>
+          <input type="url" id="thumbUrl" class="form-control" placeholder="https://drive.google.com/file/d/...">
+        </div>
+
+        <button type="submit" id="btnSubmitForm" class="btn-auth-submit" style="margin-top: 1rem;">Kirim Karya</button>
+      </form>
     </div>
   </div>
 
@@ -381,19 +462,15 @@
       }
     }
 
-   
-    // Formatter gambar Google Drive tercepat & anti-CORS untuk tag <img>
-function formatDriveUrl(url) {
-  if (!url || typeof url !== 'string' || !url.startsWith("http")) return DEFAULT_THUMB;
-  
-  // Ekstrak ID File Google Drive dari link manapun
-  const match = url.match(/[-\w]{25,}/);
-  if (match && match[0]) {
-    // Format CDN Direct Image Google
-    return `https://lh3.googleusercontent.com/d/${match[0]}`;
-  }
-  return url;
-}
+    function formatDriveUrl(url) {
+      if (!url || typeof url !== 'string' || !url.startsWith("http")) return DEFAULT_THUMB;
+      const match = url.match(/[-\w]{25,}/);
+      if (match && match[0]) {
+        return `https://lh3.googleusercontent.com/d/${match[0]}`;
+      }
+      return url;
+    }
+
     function renderGames(data) {
       const container = document.getElementById("gameContainer");
       container.innerHTML = "";
@@ -458,8 +535,12 @@ function formatDriveUrl(url) {
     }
 
     function openAuthModal() {
-      document.getElementById("authModal").style.display = "flex";
-      document.getElementById("studentPassword").focus();
+      if (sessionStorage.getItem("siswaAuthenticated") === "true") {
+        openSubmitModal();
+      } else {
+        document.getElementById("authModal").style.display = "flex";
+        document.getElementById("studentPassword").focus();
+      }
     }
 
     function closeAuthModal() {
@@ -472,9 +553,57 @@ function formatDriveUrl(url) {
       const inputPass = document.getElementById("studentPassword").value;
       if (inputPass === PASSWORD_SISWA) {
         sessionStorage.setItem("siswaAuthenticated", "true");
-        window.location.href = "submit.html";
+        closeAuthModal();
+        openSubmitModal();
       } else {
         document.getElementById("authError").style.display = "block";
+      }
+    }
+
+    function openSubmitModal() {
+      document.getElementById("submitModal").style.display = "flex";
+    }
+
+    function closeSubmitModal() {
+      document.getElementById("submitModal").style.display = "none";
+    }
+
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+      const submitBtn = document.getElementById("btnSubmitForm");
+      submitBtn.innerText = "Mengirim...";
+      submitBtn.disabled = true;
+
+      const payload = {
+        "Nama Siswa": document.getElementById("namaSiswa").value,
+        "Kelas": document.getElementById("kelasSiswa").value,
+        "Judul Game": document.getElementById("judulGame").value,
+        "Kategori": document.getElementById("kategoriGame").value,
+        "Deskripsi": document.getElementById("deskripsiGame").value,
+        "Game URL": document.getElementById("gameUrl").value,
+        "Thumbnail URL": document.getElementById("thumbUrl").value
+      };
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        alert("Berhasil mengumpulkan game!");
+        document.getElementById("submitGameForm").reset();
+        closeSubmitModal();
+        loadGames(); // Muat ulang game setelah submit
+      } catch (error) {
+        console.error("Gagal mengirim data:", error);
+        alert("Gagal mengirim data! Silakan periksa koneksi internet Anda.");
+      } finally {
+        submitBtn.innerText = "Kirim Karya";
+        submitBtn.disabled = false;
       }
     }
   </script>
