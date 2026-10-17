@@ -248,7 +248,7 @@
     }
 
     .modal-auth, .modal-submit {
-      max-width: 500px;
+      max-width: 480px;
       height: auto;
       max-height: 90vh;
       padding: 2rem;
@@ -362,7 +362,7 @@
     </div>
   </main>
 
-  <!-- Modal Frame Game -->
+  <!-- Modal Main Game -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -373,11 +373,11 @@
     </div>
   </div>
 
-  <!-- Modal Auth (Password Guru) -->
+  <!-- Modal Verifikasi Password Zona Siswa -->
   <div id="authModal" class="modal">
     <div class="modal-content modal-auth">
       <h2 style="color: #fff; margin-bottom: 0.5rem; text-align: center;">🎓 Masuk Zona Siswa</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 1rem;">Masukkan password yang diberikan guru untuk mengumpulkan tugas.</p>
+      <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 1rem;">Masukkan password yang diberikan guru untuk mengakses form pengumpulan game/aplikasi.</p>
       
       <input type="password" id="studentPassword" class="auth-input" placeholder="Masukkan Password..." onkeyup="if(event.key === 'Enter') verifyPassword()" style="text-align: center;">
       
@@ -389,32 +389,32 @@
     </div>
   </div>
 
-  <!-- Modal Form Pengumpulan Game -->
+  <!-- Modal Form Pengumpulan Aplikasi (Hanya Terbuka Setelah Login Berhasil) -->
   <div id="submitModal" class="modal">
     <div class="modal-content modal-submit">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2 style="color: #fff;">🚀 Pengumpulan Aplikasi</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem;">
+        <h2 style="color: #fff; font-size: 1.3rem;">📝 Pengumpulan Game/Aplikasi</h2>
         <button class="close-btn" onclick="closeSubmitModal()">&times;</button>
       </div>
       
       <form id="submitGameForm" onsubmit="handleFormSubmit(event)">
         <div class="form-group">
-          <label for="namaSiswa">Nama Siswa / Kelompok</label>
+          <label for="namaSiswa">Nama Siswa / Kelompok *</label>
           <input type="text" id="namaSiswa" class="form-control" placeholder="Contoh: Budi Santoso" required>
         </div>
 
         <div class="form-group">
-          <label for="kelasSiswa">Kelas</label>
+          <label for="kelasSiswa">Kelas *</label>
           <input type="text" id="kelasSiswa" class="form-control" placeholder="Contoh: XII RPL 1" required>
         </div>
 
         <div class="form-group">
-          <label for="judulGame">Judul Game / Aplikasi</label>
+          <label for="judulGame">Judul Game / Aplikasi *</label>
           <input type="text" id="judulGame" class="form-control" placeholder="Contoh: Petualangan Congklak" required>
         </div>
 
         <div class="form-group">
-          <label for="kategoriGame">Kategori</label>
+          <label for="kategoriGame">Kategori *</label>
           <select id="kategoriGame" class="form-control" required>
             <option value="Game Tradisional">Game Tradisional</option>
             <option value="Game Edukasi">Game Edukasi</option>
@@ -423,12 +423,12 @@
         </div>
 
         <div class="form-group">
-          <label for="deskripsiGame">Deskripsi Singkat</label>
-          <textarea id="deskripsiGame" class="form-control" placeholder="Jelaskan secara singkat aturan atau cara memainkan game ini..." required></textarea>
+          <label for="deskripsiGame">Deskripsi Singkat *</label>
+          <textarea id="deskripsiGame" class="form-control" placeholder="Jelaskan ringkas mengenai game atau cara memainkannya..." required></textarea>
         </div>
 
         <div class="form-group">
-          <label for="gameUrl">URL Game (Link Web / Playable)</label>
+          <label for="gameUrl">URL Game / Aplikasi (Link Web) *</label>
           <input type="url" id="gameUrl" class="form-control" placeholder="https://..." required>
         </div>
 
@@ -437,7 +437,7 @@
           <input type="url" id="thumbUrl" class="form-control" placeholder="https://drive.google.com/file/d/...">
         </div>
 
-        <button type="submit" id="btnSubmitForm" class="btn-auth-submit" style="margin-top: 1rem;">Kirim Karya</button>
+        <button type="submit" id="btnSubmitForm" class="btn-auth-submit" style="margin-top: 0.5rem;">🚀 Kirim Karya Sekarang</button>
       </form>
     </div>
   </div>
@@ -535,6 +535,7 @@
     }
 
     function openAuthModal() {
+      // Periksa apakah siswa sudah pernah login di sesi browser ini
       if (sessionStorage.getItem("siswaAuthenticated") === "true") {
         openSubmitModal();
       } else {
@@ -594,15 +595,15 @@
           body: JSON.stringify(payload)
         });
 
-        alert("Berhasil mengumpulkan game!");
+        alert("Berhasil mengumpulkan game/aplikasi!");
         document.getElementById("submitGameForm").reset();
         closeSubmitModal();
-        loadGames(); // Muat ulang game setelah submit
+        loadGames();
       } catch (error) {
         console.error("Gagal mengirim data:", error);
         alert("Gagal mengirim data! Silakan periksa koneksi internet Anda.");
       } finally {
-        submitBtn.innerText = "Kirim Karya";
+        submitBtn.innerText = "🚀 Kirim Karya Sekarang";
         submitBtn.disabled = false;
       }
     }
