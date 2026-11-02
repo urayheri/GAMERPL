@@ -389,7 +389,7 @@
     </div>
   </div>
 
-  <!-- Modal Form Pengumpulan Aplikasi (Hanya Terbuka Setelah Login Berhasil) -->
+  <!-- Modal Form Pengumpulan Aplikasi -->
   <div id="submitModal" class="modal">
     <div class="modal-content modal-submit">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem;">
@@ -433,8 +433,8 @@
         </div>
 
         <div class="form-group">
-          <label for="thumbUrl">URL Thumbnail (Link Google Drive / Gambar)</label>
-          <input type="url" id="thumbUrl" class="form-control" placeholder="https://drive.google.com/file/d/...">
+          <label for="thumbFile">Upload File Thumbnail / Cover Game (Opsional)</label>
+          <input type="file" id="thumbFile" class="form-control" accept="image/*" style="padding: 7px;">
         </div>
 
         <button type="submit" id="btnSubmitForm" class="btn-auth-submit" style="margin-top: 0.5rem;">🚀 Kirim Karya Sekarang</button>
@@ -443,7 +443,7 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycby78xS9rAFrsiebhDMdDlbj0TAADsOYRm2J-SMNyx4tx93IOgva8-MMmCXGsz-cGPkp/exec";
+    const API_URL = "URL_WEB_APP_ANDA_DISINI"; // Ganti dengan URL deployment Web App GAS Anda
     const PASSWORD_SISWA = "rpljuara";
     const DEFAULT_THUMB = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop"; 
     let gameData = [];
@@ -535,7 +535,6 @@
     }
 
     function openAuthModal() {
-      // Periksa apakah siswa sudah pernah login di sesi browser ini
       if (sessionStorage.getItem("siswaAuthenticated") === "true") {
         openSubmitModal();
       } else {
@@ -575,36 +574,55 @@
       submitBtn.innerText = "Mengirim...";
       submitBtn.disabled = true;
 
-      const payload = {
-        "Nama Siswa": document.getElementById("namaSiswa").value,
-        "Kelas": document.getElementById("kelasSiswa").value,
-        "Judul Game": document.getElementById("judulGame").value,
-        "Kategori": document.getElementById("kategoriGame").value,
-        "Deskripsi": document.getElementById("deskripsiGame").value,
-        "Game URL": document.getElementById("gameUrl").value,
-        "Thumbnail URL": document.getElementById("thumbUrl").value
+      const fileInput = document.getElementById("thumbFile");
+      let fileBase64 = "";
+      let fileName = "";
+      let fileMimeType = "";
+
+      const sendData = async (base64Data = "") => {
+        const payload = {
+          namaSiswa: document.getElementById("namaSiswa").value,
+          kelas: document.getElementById("kelasSiswa").value,
+          judulGame: document.getElementById("judulGame").value,
+          kategori: document.getElementById("kategoriGame").value,
+          deskripsi: document.getElementById("deskripsiGame").value,
+          gameUrl: document.getElementById("gameUrl").value,
+          fileBase64: base64Data,
+          fileName: fileName,
+          fileMimeType: fileMimeType
+        };
+
+        try {
+          await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+          });
+
+          alert("Berhasil mengumpulkan game/aplikasi!");
+          document.getElementById("submitGameForm").reset();
+          closeSubmitModal();
+          loadGames();
+        } catch (error) {
+          console.error("Gagal mengirim data:", error);
+          alert("Gagal mengirim data! Silakan periksa koneksi internet Anda.");
+        } finally {
+          submitBtn.innerText = "🚀 Kirim Karya Sekarang";
+          submitBtn.disabled = false;
+        }
       };
 
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        alert("Berhasil mengumpulkan game/aplikasi!");
-        document.getElementById("submitGameForm").reset();
-        closeSubmitModal();
-        loadGames();
-      } catch (error) {
-        console.error("Gagal mengirim data:", error);
-        alert("Gagal mengirim data! Silakan periksa koneksi internet Anda.");
-      } finally {
-        submitBtn.innerText = "🚀 Kirim Karya Sekarang";
-        submitBtn.disabled = false;
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        fileName = file.name;
+        fileMimeType = file.type;
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+          fileBase64 = uploadEvent.target.result;
+          sendData(fileBase64);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        sendData("");
       }
     }
   </script>
