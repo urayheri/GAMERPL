@@ -443,7 +443,7 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycby78xS9rAFrsiebhDMdDlbj0TAADsOYRm2J-SMNyx4tx93IOgva8-MMmCXGsz-cGPkp/exec"; // Ganti dengan URL deployment Web App GAS Anda
+    const API_URL = "https://script.google.com/macros/s/AKfycby78xS9rAFrsiebhDMdDlbj0TAADsOYRm2J-SMNyx4tx93IOgva8-MMmCXGsz-cGPkp/exec"; 
     const PASSWORD_SISWA = "rpljuara";
     const DEFAULT_THUMB = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop"; 
     let gameData = [];
@@ -586,10 +586,10 @@
           judulGame: document.getElementById("judulGame").value,
           kategori: document.getElementById("kategoriGame").value,
           deskripsi: document.getElementById("deskripsiGame").value,
-          gameUrl: document.getElementById("gameUrl").value,
-          fileBase64: base64Data,
-          fileName: fileName,
-          fileMimeType: fileMimeType
+          gameUrl: document.getElementById("gameUrl").value, // Mengirim URL game input siswa
+          thumbBase64: base64Data,
+          thumbName: fileName,
+          thumbMimeType: fileMimeType
         };
 
         try {
